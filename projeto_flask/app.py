@@ -1,9 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 
 lista_produtos = [
-    { "nome": "Coca-cola", "descricao": "veneno" },
-    { "nome": "Doritos", "descricao": "suja mão" },
-    { "nome": "Água", "descricao": "mata sede" },
+    { "nome": "Coca-cola", "descricao": "veneno", "preco": 12.02, "imagem": "" },
+    { "nome": "Doritos", "descricao": "suja mão", "preco": 12.02, "imagem": "" },
+    { "nome": "Água", "descricao": "mata sede", "preco": 12.02, "imagem": "" },
 ]
 
 app = Flask("minha app")
@@ -30,6 +30,25 @@ def produto(nome):
             return render_template("produto.html", produto=produto)
 
     return "Produto não existe!"
+
+
+# GET
+@app.route("/produtos/cadastro")
+def cadastro_produto():
+    return render_template("cadastro_produto.html")
+
+# POST
+@app.route("/produtos", methods=["POST"])
+def salvar_produto():
+    nome = request.form['nome']
+    descricao = request.form['descricao']
+    preco = request.form['preco']
+    imagem = request.form['imagem']
+    produto = { "nome": nome, "descricao": descricao, "preco": preco, "imagem": imagem }
+    lista_produtos.append(produto)
+    
+    return redirect(url_for("produtos"))
+
 
 
 app.run(port=5001)
